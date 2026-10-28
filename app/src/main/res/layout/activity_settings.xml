@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f2f2f2">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="تسطير"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:textColor="#111111"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="صانع الكيبورد: أبوجبل ابن الكوت"
+            android:textColor="#777777"
+            android:paddingBottom="12dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/btn_enable"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="تفعيل الكيبورد"/>
+            <Button
+                android:id="@+id/btn_choose"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="اختيار الكيبورد"/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="سرعة الكتابة (1-500)"
+            android:paddingTop="14dp"
+            android:textColor="#333333"/>
+        <TextView
+            android:id="@+id/tv_speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="200"
+            android:textStyle="bold"/>
+        <SeekBar
+            android:id="@+id/sb_speed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="الفارزة"
+            android:paddingTop="10dp"
+            android:textColor="#333333"/>
+        <Switch
+            android:id="@+id/sw_sep"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="تفعيل الفارزة"/>
+        <Spinner
+            android:id="@+id/sp_sep"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <Switch
+            android:id="@+id/sw_word"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="كل ضغطة حرف → كلمة"
+            android:paddingTop="10dp"/>
+        <Switch
+            android:id="@+id/sw_letter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="كل ضغطة حرف → حرف عشوائي"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="الكلمات (كل كلمة بسطر)"
+            android:paddingTop="12dp"
+            android:textColor="#333333"/>
+        <EditText
+            android:id="@+id/et_words"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:gravity="top"
+            android:inputType="textMultiLine"
+            android:hint="اكتب كلماتك هنا..."/>
+
+        <Button
+            android:id="@+id/btn_save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="حفظ"/>
+    </LinearLayout>
+</ScrollView>
