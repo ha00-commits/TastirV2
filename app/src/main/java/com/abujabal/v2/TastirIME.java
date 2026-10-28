@@ -41,6 +41,8 @@ public class TastirIME extends InputMethodService
         View v = getLayoutInflater().inflate(R.layout.keyboard_view, null);
         kv = (KeyboardView) v.findViewById(R.id.keyboard_view);
         indicator = (TextView) v.findViewById(R.id.typing_indicator);
+        kv.setSoundEffectsEnabled(false);
+        kv.setHapticFeedbackEnabled(false);
         kbAr = new Keyboard(this, R.xml.qwerty_ar);
         kbEn = new Keyboard(this, R.xml.qwerty_en);
         kbSym = new Keyboard(this, R.xml.symbols);
@@ -158,7 +160,7 @@ public class TastirIME extends InputMethodService
                 indicator.setText(ch);
                 indicator.setVisibility(View.VISIBLE);
                 handler.postDelayed(new Runnable() {
-                    public void run() { indicator.setVisibility(View.GONE); }
+                    public void run() { indicator.setVisibility(View.INVISIBLE); }
                 }, Math.max(80, delay() / 2));
             }
         });
@@ -170,7 +172,6 @@ public class TastirIME extends InputMethodService
         if (info == null || info.packageName == null) return;
         autoOn = true;
         final String pkg = info.packageName;
-        Toast.makeText(this, "Auto ON", Toast.LENGTH_SHORT).show();
         new Thread(new Runnable() {
             public void run() {
                 while (autoOn) {
@@ -195,19 +196,16 @@ public class TastirIME extends InputMethodService
     }
 
     private void stopAuto() {
-        if (autoOn) {
-            autoOn = false;
-            Toast.makeText(this, "Auto OFF", Toast.LENGTH_SHORT).show();
-        }
+        autoOn = false;
     }
 
     @Override
     public void onPress(int primaryCode) {
-        if (primaryCode == 1587) {
+        if (primaryCode == 1603) {
             holdRunnable = new Runnable() {
                 public void run() { holdFired = true; startAuto(); }
             };
-            handler.postDelayed(holdRunnable, 2000);
+            handler.postDelayed(holdRunnable, 1000);
         }
     }
 
@@ -223,7 +221,7 @@ public class TastirIME extends InputMethodService
     public void onKey(int primaryCode, int[] keyCodes) {
         InputConnection ic = getCurrentInputConnection();
         if (ic == null) return;
-        if (primaryCode == 1587) {
+        if (primaryCode == 1603) {
             if (holdFired) { holdFired = false; return; }
             if (autoOn) { stopAuto(); return; }
             startAuto();
@@ -269,4 +267,4 @@ public class TastirIME extends InputMethodService
     @Override public void swipeRight() {}
     @Override public void swipeUp() {}
     @Override public void swipeDown() { requestHideSelf(0); }
-}
+                }
