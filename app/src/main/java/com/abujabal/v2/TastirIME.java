@@ -11,9 +11,11 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
 
 public class TastirIME extends InputMethodService
@@ -29,13 +31,15 @@ public class TastirIME extends InputMethodService
     private volatile boolean holdFired = false;
     private int lettersMode = 0;
     private int mode = 0;
-    private String lastText = "";
+    private final HashSet<String> usedSentences = new HashSet<>();
+    private TextView indicator;
 
     @Override
     public View onCreateInputView() {
         prefs = getSharedPreferences("tastir", Context.MODE_PRIVATE);
         View v = getLayoutInflater().inflate(R.layout.keyboard_view, null);
         kv = (KeyboardView) v.findViewById(R.id.keyboard_view);
+        indicator = (TextView) v.findViewById(R.id.typing_indicator);
         kbAr = new Keyboard(this, R.xml.qwerty_ar);
         kbEn = new Keyboard(this, R.xml.qwerty_en);
         kbSym = new Keyboard(this, R.xml.symbols);
@@ -68,8 +72,8 @@ public class TastirIME extends InputMethodService
     }
 
     private String separator() {
-        String sep = prefs.getString("separator", "~");
         if (!prefs.getBoolean("sep_enabled", true)) return " ";
+        String sep = prefs.getString("separator", "~");
         if (sep == null || sep.isEmpty()) return " ";
         return sep;
     }
@@ -83,16 +87,25 @@ public class TastirIME extends InputMethodService
     private String makeSentence() {
         ArrayList<String> l = words();
         if (l.isEmpty()) return "";
-        int len = 2 + random.nextInt(3);
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < len; i++) {
-            if (i > 0) sb.append(separator());
-            sb.append(l.get(random.nextInt(l.size())));
+        for (int attempt = 0; attempt < 40; attempt++) {
+            int len = 2 + random.nextInt(3);
+            StringBuilder sb = new StringBuilder();
+            String prev = "";
+            for (int i = 0; i < len; i++) {
+                String w = l.get(random.nextInt(l.size()));
+                if (w.equals(prev)) { i--; continue; }
+                if (i > 0) sb.append(separator());
+                sb.append(w);
+                prev = w;
+            }
+            String out = sb.toString();
+            if (!usedSentences.contains(out)) {
+                usedSentences.add(out);
+                if (usedSentences.size() > 3000) usedSentences.clear();
+                return out;
+            }
         }
-        String out = sb.toString();
-        if (out.equals(lastText)) out = out + separator() + randomWord();
-        lastText = out;
-        return out;
+        return "";
     }
 
     private char randomLetter() {
@@ -120,6 +133,21 @@ public class TastirIME extends InputMethodService
         return 501 - speed;
     }
 
+    private void flashKey(final String ch) {
+        handler.post(new Runnable() {
+            public void run() {
+                if (indicator == null) return;
+                indicator.setText(ch);
+                indicator.setVisibility(View.VISIBLE);
+                if (kv != null) kv.performHapticFeedback(
+                        android.view.HapticFeedbackConstants.KEYBOARD_TAP);
+                handler.postDelayed(new Runnable() {
+                    public void run() { indicator.setVisibility(View.GONE); }
+                }, Math.max(80, delay() / 2));
+            }
+        });
+    }
+
     private void startAuto() {
         if (autoOn) return;
         EditorInfo info = getCurrentInputEditorInfo();
@@ -140,6 +168,7 @@ public class TastirIME extends InputMethodService
                     for (int i = 0; i < s.length() && autoOn; i++) {
                         final String ch = String.valueOf(s.charAt(i));
                         handler.post(new Runnable() { public void run() { commit(ch); } });
+                        flashKey(ch);
                         sleep(delay());
                     }
                     handler.post(new Runnable() { public void run() { commit(separator()); } });
@@ -178,7 +207,6 @@ public class TastirIME extends InputMethodService
     public void onKey(int primaryCode, int[] keyCodes) {
         InputConnection ic = getCurrentInputConnection();
         if (ic == null) return;
-
         if (primaryCode == 1587) {
             if (holdFired) { holdFired = false; return; }
             if (autoOn) { stopAuto(); return; }
@@ -225,4 +253,4 @@ public class TastirIME extends InputMethodService
     @Override public void swipeRight() {}
     @Override public void swipeUp() {}
     @Override public void swipeDown() { requestHideSelf(0); }
-          }
+                }
