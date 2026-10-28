@@ -11,8 +11,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
+import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -98,12 +98,6 @@ public class TastirIME extends InputMethodService
         return sep;
     }
 
-    private String randomWord() {
-        ArrayList<String> l = words();
-        if (l.isEmpty()) return "";
-        return l.get(random.nextInt(l.size()));
-    }
-
     private String makeSentence() {
         ArrayList<String> l = words();
         if (l.isEmpty()) return "";
@@ -128,14 +122,6 @@ public class TastirIME extends InputMethodService
         return "";
     }
 
-    private char randomLetter() {
-        ArrayList<String> l = words();
-        if (l.isEmpty()) return ' ';
-        String w = l.get(random.nextInt(l.size()));
-        if (w.isEmpty()) return ' ';
-        return w.charAt(random.nextInt(w.length()));
-    }
-
     private void commit(String s) {
         InputConnection ic = getCurrentInputConnection();
         if (ic != null) ic.commitText(s, 1);
@@ -153,10 +139,50 @@ public class TastirIME extends InputMethodService
         return 501 - speed;
     }
 
+    private void sendAction() {
+        InputConnection ic = getCurrentInputConnection();
+        if (ic == null) return;
+        EditorInfo ei = getCurrentInputEditorInfo();
+        int action = (ei != null)
+                ? (ei.imeOptions & EditorInfo.IME_MASK_ACTION)
+                : EditorInfo.IME_ACTION_NONE;
+        if (action != EditorInfo.IME_ACTION_NONE
+                && action != EditorInfo.IME_ACTION_UNSPECIFIED) {
+            ic.performEditorAction(action);
+        } else {
+            ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
+            ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER));
+        }
+    }
+
     private void flashKey(final String ch) {
         handler.post(new Runnable() {
             public void run() {
-                if (indicator == null) return;
+                if (indicator == null || kv == null) return;
+                Keyboard kb = kv.getKeyboard();
+                if (kb == null) return;
+                float sx = (float) kv.getWidth() / kb.getMinWidth();
+                float sy = (float) kv.getHeight() / kb.getHeight();
+                int x = 0, y = 0;
+                int w = (int) (40 * sx);
+                int h = (int) (40 * sy);
+                for (Keyboard.Key k : kb.getKeys()) {
+                    String lbl = k.label == null ? "" : k.label.toString();
+                    if (lbl.equals(ch)) {
+                        x = (int) (k.x * sx);
+                        y = (int) (k.y * sy);
+                        w = (int) (k.width * sx);
+                        h = (int) (k.height * sy);
+                        break;
+                    }
+                }
+                FrameLayout.LayoutParams lp =
+                        (FrameLayout.LayoutParams) indicator.getLayoutParams();
+                lp.leftMargin = x;
+                lp.topMargin = y;
+                lp.width = w;
+                lp.height = h;
+                indicator.setLayoutParams(lp);
                 indicator.setText(ch);
                 indicator.setVisibility(View.VISIBLE);
                 handler.postDelayed(new Runnable() {
@@ -180,24 +206,36 @@ public class TastirIME extends InputMethodService
                         autoOn = false;
                         break;
                     }
-                    String s = makeSentence();
-                    if (s.isEmpty()) { autoOn = false; break; }
-                    for (int i = 0; i < s.length() && autoOn; i++) {
-                        final String ch = String.valueOf(s.charAt(i));
+                    int lines = prefs.getInt("send_lines", 2);
+                    if (lines < 1) lines = 1;
+                    if (lines > 300) lines = 300;
+                    boolean autoSend = prefs.getBoolean("auto_send", false);
+                    StringBuilder msg = new StringBuilder();
+                    for (int l = 0; l < lines && autoOn; l++) {
+                        String s = makeSentence();
+                        if (s.isEmpty()) break;
+                        if (l > 0) msg.append("\n");
+                        msg.append(s);
+                    }
+                    if (msg.length() == 0) { autoOn = false; break; }
+                    String text = msg.toString();
+                    for (int i = 0; i < text.length() && autoOn; i++) {
+                        char c = text.charAt(i);
+                        final String ch = String.valueOf(c);
                         handler.post(new Runnable() { public void run() { commit(ch); } });
-                        flashKey(ch);
+                        if (c != '\n') flashKey(ch);
                         sleep(delay());
                     }
-                    handler.post(new Runnable() { public void run() { commit(separator()); } });
-                    sleep(delay());
+                    if (autoSend) {
+                        handler.post(new Runnable() { public void run() { sendAction(); } });
+                        sleep(delay());
+                    }
                 }
             }
         }).start();
     }
 
-    private void stopAuto() {
-        autoOn = false;
-    }
+    private void stopAuto() { autoOn = false; }
 
     @Override
     public void onPress(int primaryCode) {
@@ -247,15 +285,6 @@ public class TastirIME extends InputMethodService
         if (primaryCode == 10) {
             ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
             ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER));
-            return;
-        }
-        if (prefs.getBoolean("word_mode", false)) {
-            String w = randomWord();
-            if (!w.isEmpty()) commit(w + separator());
-            return;
-        }
-        if (prefs.getBoolean("letter_mode", false)) {
-            commit(String.valueOf(randomLetter()));
             return;
         }
         commit(String.valueOf((char) primaryCode));
