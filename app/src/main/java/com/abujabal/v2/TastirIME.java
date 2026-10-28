@@ -145,7 +145,7 @@ public class TastirIME extends InputMethodService
     }
 
     private int delay() {
-        int speed = prefs.getInt("type_speed", 200);
+        int speed = prefs.getInt("type_speed", 1);
         if (speed < 1) speed = 1;
         if (speed > 500) speed = 500;
         return 501 - speed;
@@ -157,8 +157,6 @@ public class TastirIME extends InputMethodService
                 if (indicator == null) return;
                 indicator.setText(ch);
                 indicator.setVisibility(View.VISIBLE);
-                if (kv != null) kv.performHapticFeedback(
-                        android.view.HapticFeedbackConstants.KEYBOARD_TAP);
                 handler.postDelayed(new Runnable() {
                     public void run() { indicator.setVisibility(View.GONE); }
                 }, Math.max(80, delay() / 2));
@@ -228,7 +226,7 @@ public class TastirIME extends InputMethodService
         if (primaryCode == 1587) {
             if (holdFired) { holdFired = false; return; }
             if (autoOn) { stopAuto(); return; }
-            commit("س");
+            startAuto();
             return;
         }
         if (primaryCode == -104) {
@@ -271,4 +269,4 @@ public class TastirIME extends InputMethodService
     @Override public void swipeRight() {}
     @Override public void swipeUp() {}
     @Override public void swipeDown() { requestHideSelf(0); }
-        }
+}
