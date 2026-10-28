@@ -3,25 +3,28 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="#000000">
+    android:background="#000000"
+    android:hapticFeedbackEnabled="false"
+    android:soundEffectsEnabled="false">
     <TextView
         android:id="@+id/typing_indicator"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="34dp"
         android:layout_gravity="center_horizontal"
         android:background="#3a3a3a"
         android:paddingLeft="18dp"
         android:paddingRight="18dp"
-        android:paddingTop="6dp"
-        android:paddingBottom="6dp"
         android:textColor="#ffffff"
         android:textSize="20sp"
-        android:visibility="gone"/>
+        android:gravity="center"
+        android:visibility="invisible"/>
     <android.inputmethodservice.KeyboardView
         android:id="@+id/keyboard_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#000000"
         android:keyBackground="@drawable/key_bg"
-        android:keyTextColor="#ffffff"/>
+        android:keyTextColor="#ffffff"
+        android:hapticFeedbackEnabled="false"
+        android:soundEffectsEnabled="false"/>
 </LinearLayout>
