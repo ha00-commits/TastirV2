@@ -2,26 +2,26 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#f2f2f2">
+    android:background="#0d0d0d">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="18dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="تسطير"
-            android:textSize="26sp"
+            android:textSize="28sp"
             android:textStyle="bold"
-            android:textColor="#111111"/>
+            android:textColor="#ffffff"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="صانع الكيبورد: أبوجبل ابن الكوت"
-            android:textColor="#777777"
-            android:paddingBottom="12dp"/>
+            android:textColor="#888888"
+            android:paddingBottom="14dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -32,27 +32,28 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="تفعيل الكيبورد"/>
+                android:text="⚡ تفعيل الكيبورد"/>
             <Button
                 android:id="@+id/btn_choose"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="اختيار الكيبورد"/>
+                android:text="✅ اختيار الكيبورد"/>
         </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="سرعة الكتابة (1-500)"
-            android:paddingTop="14dp"
-            android:textColor="#333333"/>
+            android:text="⚡ سرعة الكتابة (1-500)"
+            android:textColor="#ffffff"
+            android:paddingTop="18dp"/>
         <TextView
             android:id="@+id/tv_speed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="200"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:textColor="#4db6ac"/>
         <SeekBar
             android:id="@+id/sb_speed"
             android:layout_width="match_parent"
@@ -61,14 +62,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="الفارزة"
-            android:paddingTop="10dp"
-            android:textColor="#333333"/>
+            android:text="✂️ الفارزة"
+            android:textColor="#ffffff"
+            android:paddingTop="16dp"/>
         <Switch
             android:id="@+id/sw_sep"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="تفعيل الفارزة"/>
+            android:text="تفعيل الفارزة"
+            android:textColor="#ffffff"/>
         <Spinner
             android:id="@+id/sp_sep"
             android:layout_width="match_parent"
@@ -79,32 +81,38 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="كل ضغطة حرف → كلمة"
-            android:paddingTop="10dp"/>
+            android:textColor="#ffffff"
+            android:paddingTop="12dp"/>
         <Switch
             android:id="@+id/sw_letter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="كل ضغطة حرف → حرف عشوائي"/>
+            android:text="كل ضغطة حرف → حرف عشوائي"
+            android:textColor="#ffffff"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="الكلمات (كل كلمة بسطر)"
-            android:paddingTop="12dp"
-            android:textColor="#333333"/>
+            android:text="📝 الكلمات (كل كلمة بسطر)"
+            android:textColor="#ffffff"
+            android:paddingTop="16dp"/>
         <EditText
             android:id="@+id/et_words"
             android:layout_width="match_parent"
-            android:layout_height="180dp"
+            android:layout_height="200dp"
             android:gravity="top"
             android:inputType="textMultiLine"
-            android:hint="اكتب كلماتك هنا..."/>
+            android:textColor="#ffffff"
+            android:textColorHint="#777777"
+            android:background="#1e1e1e"
+            android:padding="12dp"
+            android:hint="الصق قائمتك هنا..."/>
 
         <Button
             android:id="@+id/btn_save"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:text="حفظ"/>
+            android:layout_marginTop="16dp"
+            android:text="💾 حفظ"/>
     </LinearLayout>
 </ScrollView>
