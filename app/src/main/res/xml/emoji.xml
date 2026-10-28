@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
+    android:keyWidth="12%p" android:keyHeight="50dp"
+    android:horizontalGap="0%p" android:verticalGap="5dp">
+    <Row>
+        <Key android:keyOutputText="😀" android:keyLabel="😀"/>
+        <Key android:keyOutputText="😃" android:keyLabel="😃"/>
+        <Key android:keyOutputText="😄" android:keyLabel="😄"/>
+        <Key android:keyOutputText="😁" android:keyLabel="😁"/>
+        <Key android:keyOutputText="😆" android:keyLabel="😆"/>
+        <Key android:keyOutputText="😅" android:keyLabel="😅"/>
+        <Key android:keyOutputText="😂" android:keyLabel="😂"/>
+        <Key android:keyOutputText="🤣" android:keyLabel="🤣"/>
+    </Row>
+    <Row>
+        <Key android:keyOutputText="😊" android:keyLabel="😊"/>
+        <Key android:keyOutputText="😍" android:keyLabel="😍"/>
+        <Key android:keyOutputText="😘" android:keyLabel="😘"/>
+        <Key android:keyOutputText="😎" android:keyLabel="😎"/>
+        <Key android:keyOutputText="🥳" android:keyLabel="🥳"/>
+        <Key android:keyOutputText="😭" android:keyLabel="😭"/>
+        <Key android:keyOutputText="😡" android:keyLabel="😡"/>
+        <Key android:keyOutputText="🤬" android:keyLabel="🤬"/>
+    </Row>
+    <Row>
+        <Key android:codes="-107" android:keyLabel="ABC" android:keyWidth="20%p"/>
+        <Key android:codes="32" android:keyLabel="مسافة" android:keyWidth="34%p"/>
+        <Key android:codes="-1" android:keyLabel="⌫" android:keyWidth="16%p" android:isRepeatable="true"/>
+        <Key android:codes="10" android:keyLabel="⏎" android:keyWidth="30%p"/>
+    </Row>
+</Keyboard>
