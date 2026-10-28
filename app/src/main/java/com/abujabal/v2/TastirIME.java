@@ -37,6 +37,7 @@ public class TastirIME extends InputMethodService
     @Override
     public View onCreateInputView() {
         prefs = getSharedPreferences("tastir", Context.MODE_PRIVATE);
+        ensureWords();
         View v = getLayoutInflater().inflate(R.layout.keyboard_view, null);
         kv = (KeyboardView) v.findViewById(R.id.keyboard_view);
         indicator = (TextView) v.findViewById(R.id.typing_indicator);
@@ -49,6 +50,23 @@ public class TastirIME extends InputMethodService
         kv.setKeyboard(lettersMode == 0 ? kbAr : kbEn);
         kv.setOnKeyboardActionListener(this);
         return v;
+    }
+
+    private void ensureWords() {
+        if (!prefs.getString("words", "").trim().isEmpty()) return;
+        try {
+            java.io.InputStream is = getResources().openRawResource(R.raw.words);
+            java.io.BufferedReader br = new java.io.BufferedReader(
+                    new java.io.InputStreamReader(is, "UTF-8"));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (!line.trim().isEmpty()) sb.append(line.trim()).append("\n");
+            }
+            br.close();
+            prefs.edit().putString("words", sb.toString().trim()).apply();
+        } catch (Exception e) {
+        }
     }
 
     private void setKb(Keyboard k, int m) {
@@ -253,4 +271,4 @@ public class TastirIME extends InputMethodService
     @Override public void swipeRight() {}
     @Override public void swipeUp() {}
     @Override public void swipeDown() { requestHideSelf(0); }
-                }
+        }
