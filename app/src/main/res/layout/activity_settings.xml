@@ -76,6 +76,64 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🎯 اسم الشخص (يطلع بالجُمل)"
+            android:textColor="#ffffff"
+            android:paddingTop="16dp"/>
+        <EditText
+            android:id="@+id/et_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="اكتب الاسم"
+            android:textColor="#ffffff"
+            android:textColorHint="#777777"
+            android:background="#1e1e1e"
+            android:padding="12dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🔁 كل كم سطر يطلع الاسم؟"
+            android:textColor="#ffffff"
+            android:paddingTop="10dp"/>
+        <EditText
+            android:id="@+id/et_every"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:hint="20"
+            android:textColor="#ffffff"
+            android:textColorHint="#777777"
+            android:background="#1e1e1e"
+            android:padding="12dp"/>
+
+        <Switch
+            android:id="@+id/sw_send"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="الإرسال التلقائي"
+            android:textColor="#ffffff"
+            android:paddingTop="14dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="📨 عدد الأسطر بكل رسالة (1-300)"
+            android:textColor="#ffffff"
+            android:paddingTop="10dp"/>
+        <EditText
+            android:id="@+id/et_lines"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:hint="2"
+            android:textColor="#ffffff"
+            android:textColorHint="#777777"
+            android:background="#1e1e1e"
+            android:padding="12dp"/>
+
         <Switch
             android:id="@+id/sw_word"
             android:layout_width="match_parent"
@@ -106,7 +164,7 @@
             android:textColorHint="#777777"
             android:background="#1e1e1e"
             android:padding="12dp"
-            android:hint="الصق قائمتك هنا..."/>
+            android:hint="الكلمات هنا..."/>
 
         <Button
             android:id="@+id/btn_save"
