@@ -8,10 +8,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Spinner;
@@ -25,8 +22,8 @@ public class SettingsActivity extends Activity {
     private SeekBar sbSpeed;
     private TextView tvSpeed;
     private Spinner spSep;
-    private Switch swSep, swWord, swLetter;
-    private EditText etWords;
+    private Switch swSep, swWord, swLetter, swSend;
+    private EditText etWords, etName, etEvery, etLines;
     private final String[] seps = {"~", "~+~", "~°~", "~_~", "~~", "~.~", "~!~", "+~+"};
 
     @Override
@@ -41,7 +38,11 @@ public class SettingsActivity extends Activity {
         swSep = (Switch) findViewById(R.id.sw_sep);
         swWord = (Switch) findViewById(R.id.sw_word);
         swLetter = (Switch) findViewById(R.id.sw_letter);
+        swSend = (Switch) findViewById(R.id.sw_send);
         etWords = (EditText) findViewById(R.id.et_words);
+        etName = (EditText) findViewById(R.id.et_name);
+        etEvery = (EditText) findViewById(R.id.et_every);
+        etLines = (EditText) findViewById(R.id.et_lines);
 
         ArrayAdapter<String> ad = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, seps);
@@ -49,6 +50,8 @@ public class SettingsActivity extends Activity {
         spSep.setAdapter(ad);
 
         int speed = prefs.getInt("type_speed", 200);
+        if (speed < 1) speed = 1;
+        if (speed > 500) speed = 500;
         sbSpeed.setMax(499);
         sbSpeed.setProgress(speed - 1);
         tvSpeed.setText(String.valueOf(speed));
@@ -67,7 +70,11 @@ public class SettingsActivity extends Activity {
         swSep.setChecked(prefs.getBoolean("sep_enabled", true));
         swWord.setChecked(prefs.getBoolean("word_mode", false));
         swLetter.setChecked(prefs.getBoolean("letter_mode", false));
+        swSend.setChecked(prefs.getBoolean("auto_send", false));
         etWords.setText(prefs.getString("words", ""));
+        etName.setText(prefs.getString("target_name", ""));
+        etEvery.setText(String.valueOf(prefs.getInt("name_every", 20)));
+        etLines.setText(String.valueOf(prefs.getInt("send_lines", 2)));
 
         findViewById(R.id.btn_save).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) { saveAll(); }
@@ -86,14 +93,28 @@ public class SettingsActivity extends Activity {
     }
 
     private void saveAll() {
+        int speed = sbSpeed.getProgress() + 1;
+        int every = parseInt(etEvery.getText().toString(), 20);
+        if (every < 1) every = 1;
+        int lines = parseInt(etLines.getText().toString(), 2);
+        if (lines < 1) lines = 1;
+        if (lines > 300) lines = 300;
         prefs.edit()
-                .putInt("type_speed", sbSpeed.getProgress() + 1)
+                .putInt("type_speed", speed)
                 .putString("separator", seps[spSep.getSelectedItemPosition()])
                 .putBoolean("sep_enabled", swSep.isChecked())
                 .putBoolean("word_mode", swWord.isChecked())
                 .putBoolean("letter_mode", swLetter.isChecked())
+                .putBoolean("auto_send", swSend.isChecked())
                 .putString("words", etWords.getText().toString())
+                .putString("target_name", etName.getText().toString().trim())
+                .putInt("name_every", every)
+                .putInt("send_lines", lines)
                 .apply();
         Toast.makeText(this, "Saved", Toast.LENGTH_LONG).show();
     }
-  }
+
+    private int parseInt(String v, int def) {
+        try { return Integer.parseInt(v.trim()); } catch (Exception e) { return def; }
+    }
+                                   }
